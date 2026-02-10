@@ -15,6 +15,7 @@
 |:---:|:---|:---:|:---|
 | 0 | Project Structure & Skills Setup | ✅ | [Day 0 Summary](./days/day0) |
 | 1 | Create Key Pair 🔑 | ✅ | [Day 1 Summary](./days/day1) |
+| 2 | Create Security Group 🛡️ | ✅ | [Day 2 Summary](./days/day2) |
 
 ## 🛠️ Стек технологій (Cloud)
 ![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
