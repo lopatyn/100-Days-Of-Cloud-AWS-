@@ -30,17 +30,17 @@ graph TD
         Git_Repo["Репозиторій проєкту (Git)"]
     end
 
-    Admin_User -- "1. Запит на створення (RSA)" --> EC2_Service
-    EC2_Service -- "2. Збереження публічної частини" --> Public_Key_Store
-    EC2_Service -- "3. Генерація та видача .pem" --> PEM_File
-    PEM_File -- "4. Переміщення для безпеки" --> SSH_Config
-    Git_Repo -- "5. Захист через .gitignore" -.-> PEM_File
+    Admin_User -->| "1. Запит на створення (RSA)" | EC2_Service
+    EC2_Service -->| "2. Збереження публічної частини" | Public_Key_Store
+    EC2_Service -->| "3. Генерація та видача .pem" | PEM_File
+    PEM_File -->| "4. Переміщення для безпеки" | SSH_Config
+    Git_Repo -.->| "5. Захист через .gitignore" | PEM_File
 
     %% Стілізація
     classDef compute fill:#f96,stroke:#333,stroke-width:2px;
     classDef network fill:#69f,stroke:#333,stroke-width:2px;
-    class EC2_Service compute;
-    class Public_Key_Store network;
+    class EC2_Service compute
+    class Public_Key_Store network
 ```
 
 ## Основні команди (Key Commands - Git Bash)
