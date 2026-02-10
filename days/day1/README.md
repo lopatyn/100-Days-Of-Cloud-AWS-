@@ -1,61 +1,61 @@
-# Day 1: Create Key Pair 🔑
+# День 1: Створення пари ключів (Key Pair) 🔑
 
-> **Social Summary (Ukrainian):**
+> **Social Summary:**
 > **Problem:** Як забезпечити безпечний та контрольований доступ до хмарної інфраструктури з першого дня?
 > **Solution:** Впровадження RSA Key Pairs з дотриманням принципів Hardening та секретного зберігання.
 > **Value:** Nautilus DevOps отримує фундамент для безпечної міграції, де кожен ключ захищений, а репозиторій залишається чистим від секретів.
 
-## Overview
-Key Pairs are the fundamental mechanism for establishing secure SSH connections to EC2 instances in AWS. In this initial stage of the Nautilus DevOps cloud migration, we focus on generating and properly managing these cryptographic keys. Beyond just "creating a file," we implement **SecOps best practices** by ensuring private keys are stored outside the version control system and handled with restricted filesystem permissions.
+## Огляд (Overview)
+Пари ключів (Key Pairs) є фундаментальним механізмом для встановлення безпечних SSH-з'єднань з інстансами EC2 в AWS. На цьому початковому етапі міграції Nautilus DevOps ми зосереджуємося на генерації та правильному управлінні цими криптографічними ключами. Окрім простого "створення файлу", ми впроваджуємо **SecOps best practices**: гарантуємо, що приватні ключі зберігаються поза межами системи контролю версій та мають обмежені права доступу у файловій системі.
 
-## Practical Tasks
-- [x] Create an RSA Key Pair named `xfusion-kp`.
-- [x] Implement a `.gitignore` policy to prevent accidental secret leakage.
-- [x] Refactor local storage to move keys to a secure system directory (`~/.ssh/`).
-- [x] Verify file permissions to satisfy SSH client security requirements.
+## Практичні завдання (Practical Tasks)
+- [x] Створити пару ключів RSA з назвою `xfusion-kp`.
+- [x] Налаштувати політику `.gitignore` для запобігання випадковому витоку секретів.
+- [x] Виконати рефакторинг локального зберігання: перемістити ключі у захищену системну директорію (`~/.ssh/`).
+- [x] Перевірити права доступу до файлу відповідно до вимог безпеки SSH-клієнтів.
 
-## Architecture & Implementation
-We use the AWS Management Console to generate the key pair. AWS retains the **Public Key**, while the **Private Key** is downloaded to the local administrative workstation.
+## Архітектура та реалізація (Architecture & Implementation)
+Ми використовуємо консоль керування AWS для генерації пари ключів. AWS зберігає **публічний ключ**, тоді як **приватний ключ** завантажується на локальну робочу станцію адміністратора.
 
 ```mermaid
 graph TD
-    subgraph AWS_Cloud ["AWS Global Infrastructure"]
+    subgraph AWS_Cloud ["Хмарна інфраструктура AWS"]
         EC2_Service["EC2 Key Pairs Service"]
         Public_Key_Store[("AWS Key Store (Public Key)")]
     end
 
-    subgraph Local_Workstation ["Engineer's Local Machine"]
+    subgraph Local_Workstation ["Локальна машина інженера"]
         Admin_User["Nautilus DevOps Engineer"]
         PEM_File["xfusion-kp.pem (Private Key)"]
-        SSH_Config["~/.ssh/ directory (Secure)"]
-        Git_Repo["Project Repository (Public/Private)"]
+        SSH_Config["Директорія ~/.ssh/ (Захищено)"]
+        Git_Repo["Репозиторій проєкту (Git)"]
     end
 
-    Admin_User -- "1. Request Creation (RSA)" --> EC2_Service
-    EC2_Service -- "2. Store Public Part" --> Public_Key_Store
-    EC2_Service -- "3. Generate & Download .pem" --> PEM_File
-    PEM_File -- "4. Move for Security" --> SSH_Config
-    Git_Repo -- "5. Hardened via .gitignore" -.-> PEM_File
+    Admin_User -- "1. Запит на створення (RSA)" --> EC2_Service
+    EC2_Service -- "2. Збереження публічної частини" --> Public_Key_Store
+    EC2_Service -- "3. Генерація та видача .pem" --> PEM_File
+    PEM_File -- "4. Переміщення для безпеки" --> SSH_Config
+    Git_Repo -- "5. Захист через .gitignore" -.-> PEM_File
 ```
 
-## Key Commands
+## Основні команди (Key Commands)
 ```powershell
-# Create standard secure directory if it doesn't exist (Windows/PowerShell)
+# Створення стандартної захищеної директорії (Windows/PowerShell)
 mkdir ~\.ssh -Force
 
-# Move the downloaded key to the secure location
-# This keeps the project repository "Stateless" and secure
+# Переміщення завантаженого ключа у безпечне місце
+# Це робить репозиторій проєкту "Stateless" та безпечним
 move-item .\xfusion-kp.pem ~\.ssh\xfusion-kp.pem
 
-# Secure the repository from accidental commits
+# Захист репозиторію від випадкових коммітів
 echo "xfusion-kp.pem" >> .gitignore
 ```
 
-## Security Insights 🛡️
-As Senior DevOps Engineers, we analyze this task through the **AWS Well-Architected Framework**:
-- **Security Pillar (Least Privilege):** Modern SSH clients (OpenSSH) will reject a private key if it has broad permissions (e.g., `644`). The key must be "read-only" for the owner (`400`).
-- **Secret Management:** Storing secrets in Git is a critical vulnerability. Even if the repo is private, it increases the blast radius of a credential leak.
-- **Persistence:** Since AWS does not store the private key, losing the `.pem` file means losing access to instances (unless alternative access like **SSM Session Manager** is configured).
+## Insights з безпеки (Security Insights) 🛡️
+Як Senior DevOps інженери, ми аналізуємо це завдання через призму **AWS Well-Architected Framework**:
+- **Security Pillar (Least Privilege):** Сучасні SSH-клієнти (OpenSSH) відхиляють приватний ключ, якщо він має занадто широкі права (наприклад, `644`). Ключ має бути доступним лише для читання власником (`400` в Linux або відповідні ACL у Windows).
+- **Secret Management:** Зберігання секретів у Git — це критична вразливість. Навіть якщо репозиторій приватний, це збільшує "зону ураження" у разі витоку облікових даних.
+- **Persistence:** Оскільки AWS не зберігає приватний ключ після створення, втрата `.pem` файлу означає втрату прямого доступу до інстансів (якщо не налаштовано альтернативи, такі як **SSM Session Manager**).
 
 ---
-**Next Steps:** Prepare for Day 2: Security Groups! 🚀
+**Наступні кроки:** Готуємось до Day 2: Security Groups! 🚀
