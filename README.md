@@ -14,10 +14,7 @@
 | День | Тема | Статус | Документація |
 |:---:|:---|:---:|:---|
 | 0 | Project Structure & Skills Setup | ✅ | [Day 0 Summary](./days/day0) |
-<<<<<<< HEAD
 | 1 | Create Key Pair 🔑 | ✅ | [Day 1 Summary](./days/day1) |
-=======
->>>>>>> 8f6a6c0e4b500cb9d1fbfbf7158a7c9e71bf77dd
 
 ## 🛠️ Стек технологій (Cloud)
 ![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
