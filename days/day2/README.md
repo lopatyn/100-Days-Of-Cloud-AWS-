@@ -44,4 +44,4 @@ aws ec2 authorize-security-group-ingress \
 
 ---
 - **Deep Dive:** [Глибоке занурення в Security Groups](./DEEP_DIVE_SECURITY_GROUPS.md) 🧠
-- **Наступні кроки:** Готуємось до Day 3! 🚀
+- **Наступні кроки:** [День 3: Створення підмережі (Subnet)](../day3/README.md) 🚀
