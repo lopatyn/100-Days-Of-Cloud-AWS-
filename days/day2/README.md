@@ -15,35 +15,7 @@ Security Groups (SG) — це віртуальні фаєрволи на рів�
 - [x] Додати Inbound Rule для SSH (порт 22) з CIDR `0.0.0.0/0`.
 - [x] Перевірити коректність опису групи: "Security group for Nautilus App Servers".
 
-## Архітектура та реалізація (Architecture & Implementation)
-Ми налаштували SG, яка діє як перша лінія оборони перед EC2 інстансом.
-
-```mermaid
-graph TD
-    subgraph Internet ["Публічний інтернет"]
-        AnyUser["Користувач (0.0.0.0/0)"]
-    end
-
-    subgraph AWS_Cloud ["AWS VPC (Default)"]
-        subgraph Security_Boundary ["Межа безпеки"]
-            SG["Security Group: datacenter-sg"]
-            Rule80["Allow HTTP (80)"]
-            Rule22["Allow SSH (22)"]
-        end
-        Instance["Nautilus App Server (EC2)"]
-    end
-
-    AnyUser -->|Port 80| Rule80
-    AnyUser -->|Port 22| Rule22
-    Rule80 --> Instance
-    Rule22 --> Instance
-
-    %% Стилізація
-    classDef security fill:#f66,stroke:#333,stroke-width:2px;
-    classDef compute fill:#f96,stroke:#333,stroke-width:2px;
-    class SG security
-    class Instance compute
-```
+![AWS Architecture Security Group Day 2](SecurityGroup.png)
 
 ## Основні команди (Key Commands - AWS CLI)
 Хоча ми використовували веб-інтерфейс, ось як це зробити через CLI (DevOps-шлях):
